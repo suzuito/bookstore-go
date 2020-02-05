@@ -7,11 +7,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/suzuito/bookstore-go/entity"
-	"github.com/suzuito/bookstore-go/router/application"
-	"github.com/suzuito/bookstore-go/router/repository"
 )
 
 type responseError struct {
+	Message string `json:"message"`
+}
+
+type responseStatus struct {
 	Message string `json:"message"`
 }
 
@@ -41,7 +43,14 @@ func newResponseBooks(books *[]*entity.Book) *[]*responseBook {
 	return &ret
 }
 
-func GetBooks(app application.Application) func(*gin.Context) {
+func GetStatus(app Application) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, responseStatus{Message: "ok"})
+		return
+	}
+}
+
+func GetBooks(app Application) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		repo, err := app.NewRepository(ctx)
 		if err != nil {
@@ -63,7 +72,7 @@ func GetBooks(app application.Application) func(*gin.Context) {
 	}
 }
 
-func GetBooksByID(app application.Application) func(*gin.Context) {
+func GetBooksByID(app Application) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		id := ctx.Param("id")
 		if id == "" {
@@ -82,14 +91,14 @@ func GetBooksByID(app application.Application) func(*gin.Context) {
 		}
 		book := entity.Book{}
 		if err := repo.GetBookByID(id, &book); err != nil {
-			if errors.Is(err, repository.NotFoundError) {
+			if errors.Is(err, NotFoundError) {
 				ctx.AbortWithStatusJSON(
 					http.StatusNotFound,
 					responseError{Message: err.Error()},
 				)
 				return
 			}
-			if errors.Is(err, repository.InvalidParameterError) {
+			if errors.Is(err, InvalidParameterError) {
 				ctx.AbortWithStatusJSON(
 					http.StatusBadRequest,
 					responseError{Message: err.Error()},

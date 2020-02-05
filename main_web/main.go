@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/suzuito/bookstore-go/entity"
 	"github.com/suzuito/bookstore-go/router"
-	"github.com/suzuito/bookstore-go/router/repository"
 )
 
 type RepositoryInMemory struct{}
@@ -30,15 +29,14 @@ func NewApplicationImpl() *ApplicationImpl {
 	return &ApplicationImpl{}
 }
 
-func (a *ApplicationImpl) NewRepository(ctx context.Context) (repository.Repository, error) {
+func (a *ApplicationImpl) NewRepository(ctx context.Context) (router.Repository, error) {
 	return NewRepositoryInMemory(), nil
 }
 
 func main() {
 	app := NewApplicationImpl()
 	root := gin.Default()
-	root.GET("/books", router.GetBooks(app))
-	root.GET("/books/:id", router.GetBooksByID(app))
+	router.InitializeRouter(root, app)
 	if err := root.Run(); err != nil {
 		fmt.Printf("%+v\n", err)
 		os.Exit(1)
