@@ -12,10 +12,6 @@ type responseError struct {
 	Message string `json:"message"`
 }
 
-type responseStatus struct {
-	Message string `json:"message"`
-}
-
 type responseBook struct {
 	Name  string  `json:"book"`
 	ISBN  string  `json:"isbn"`
@@ -28,18 +24,6 @@ func newResponseBook(book *entity.Book) *responseBook {
 		ISBN:  book.ISBN,
 		Price: book.Price,
 	}
-}
-
-type resopnseBooks struct {
-	Books []*responseBook
-}
-
-func newResponseBooks(books *[]*entity.Book) *[]*responseBook {
-	ret := []*responseBook{}
-	for _, book := range *books {
-		ret = append(ret, newResponseBook(book))
-	}
-	return &ret
 }
 
 func GetBooksByID(app Application) func(*gin.Context) {

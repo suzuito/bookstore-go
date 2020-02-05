@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+$GOPATH/bin/mockgen --source=router/application.go --destination=router/application_mock.go --package=router
+$GOPATH/bin/mockgen --source=router/repository.go --destination=router/repository_mock.go --package=router
+
+rm -rf /tmp/artifacts
+mkdir -p /tmp/artifacts
+go test -timeout 30s ./...
+
+set +e
+
+for n in 'router'; do
+    mkdir -p /tmp/artifacts/go-code-cover/${n}
+    go test -coverprofile=/tmp/artifacts/go-code-cover/${n}.cov -timeout 30s github.com/suzuito/bookstore-go/${n}
+    go tool cover -html=/tmp/artifacts/go-code-cover/${n}.cov -o /tmp/artifacts/go-code-cover/${n}.html
+done
