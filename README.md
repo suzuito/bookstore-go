@@ -10,3 +10,9 @@ go install github.com/golang/mock/mockgen
 ```bash
 ./test
 ```
+
+Check coverage
+
+```bash
+open /tmp/artifacts/go-code-cover/router.html
+```
