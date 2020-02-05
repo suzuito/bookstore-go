@@ -1,3 +1,4 @@
+![test](https://github.com/suzuito/bookstore-go/workflows/test/badge.svg)
 
 # Install mockgen
 
