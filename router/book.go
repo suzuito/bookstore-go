@@ -2,7 +2,6 @@ package router
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -43,44 +42,9 @@ func newResponseBooks(books *[]*entity.Book) *[]*responseBook {
 	return &ret
 }
 
-func GetStatus(app Application) func(*gin.Context) {
-	return func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, responseStatus{Message: "ok"})
-		return
-	}
-}
-
-func GetBooks(app Application) func(*gin.Context) {
-	return func(ctx *gin.Context) {
-		repo, err := app.NewRepository(ctx)
-		if err != nil {
-			ctx.AbortWithStatusJSON(
-				http.StatusInternalServerError,
-				responseError{Message: err.Error()},
-			)
-			return
-		}
-		books := []*entity.Book{}
-		if err := repo.GetBooks(&books); err != nil {
-			ctx.AbortWithStatusJSON(
-				http.StatusInternalServerError,
-				responseError{Message: err.Error()},
-			)
-			return
-		}
-		ctx.JSON(http.StatusOK, newResponseBooks(&books))
-	}
-}
-
 func GetBooksByID(app Application) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		id := ctx.Param("id")
-		if id == "" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, responseError{
-				Message: fmt.Sprintf("invalid id: %s", id),
-			})
-			return
-		}
 		repo, err := app.NewRepository(ctx)
 		if err != nil {
 			ctx.AbortWithStatusJSON(

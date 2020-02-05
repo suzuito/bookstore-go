@@ -23,7 +23,8 @@ func NewWrappedError(err error, format string, a ...interface{}) *WrappedError {
 	}
 }
 
-func (e *WrappedError) UnWrap() error { return e.err }
+func (e *WrappedError) Unwrap() error { return e.err }
+func (e *WrappedError) Error() string { return e.msg }
 
 type Repository interface {
 	GetBooks(book *[]*entity.Book) error
