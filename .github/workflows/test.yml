@@ -13,6 +13,7 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go }}
+      - run: go install github.com/golang/mock/mockgen
       - run: ./test
       - uses: actions/upload-artifact@v1
         with:
